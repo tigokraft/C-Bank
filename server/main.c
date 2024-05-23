@@ -6,8 +6,8 @@
 #include <sys/socket.h>
 #include <sys/types.h>
 #include <unistd.h>
-#include <arpa/inet.h>  // For inet_ntoa()
-#include <pthread.h>   // For multi-threading
+#include <arpa/inet.h>
+#include <pthread.h>
 
 #define MAX 80
 #define PORT 8080
@@ -19,15 +19,12 @@ struct client_info {
     char ip_addr[INET_ADDRSTRLEN];
 };
 
-// Function designed for chat with each client in a separate thread
+// Function for chat with each client in a separate thread
 void *func(void *arg)
 {
     struct client_info *cli = (struct client_info *)arg;
     char buff[MAX];
-    int n;
 
-    // Get client's IP address
-    inet_ntop(AF_INET, &cli->connfd, cli->ip_addr, INET_ADDRSTRLEN); 
     printf("Connected to client: %s\n", cli->ip_addr);
 
     // infinite loop for chat
@@ -35,16 +32,16 @@ void *func(void *arg)
         bzero(buff, MAX);
 
         // Read message from client
-        read(cli->connfd, buff, sizeof(buff));
+        int bytesRead = read(cli->connfd, buff, sizeof(buff));
 
-        // Handle "exit"
-        if (strncmp("exit", buff, 4) == 0) {
-            printf("Client %s disconnected...\n", cli->ip_addr);
+        // Handle disconnection or error
+        if (bytesRead <= 0) {
+            printf("Client %s disconnected or error reading...\n", cli->ip_addr);
             break;
         }
 
         // Print message with client IP and get server response
-        printf("From %s: %s\t To %s: ", cli->ip_addr, buff, cli->ip_addr); 
+        printf("From %s: %s\t To %s: ", cli->ip_addr, buff, cli->ip_addr);
         bzero(buff, MAX);
         fgets(buff, MAX, stdin); 
 
@@ -60,7 +57,7 @@ void *func(void *arg)
 
 int main()
 {
-    int sockfd, len;
+    int sockfd;
     struct sockaddr_in servaddr;
 
     // Create socket
@@ -91,13 +88,14 @@ int main()
 
     printf("Server listening on port %d...\n", PORT);
 
- while (1) {
+    while (1) {
         struct client_info *cli = malloc(sizeof(*cli)); // Allocate for client_info
         pthread_t thread;
 
         // Accept connection
-        socklen_t len = sizeof(cli);
-        cli->connfd = accept(sockfd, (SA*)&cli, &len); 
+        struct sockaddr_in client_addr; // Declare a separate sockaddr_in struct
+        socklen_t len = sizeof(client_addr);
+        cli->connfd = accept(sockfd, (SA*)&client_addr, &len); 
         if (cli->connfd < 0) {
             perror("server accept failed");
             free(cli); // Free memory if accept fails
@@ -105,8 +103,7 @@ int main()
         }
 
         // Get client's IP address
-        struct sockaddr_in *client_addr = (struct sockaddr_in *)&cli;
-        inet_ntop(AF_INET, &client_addr->sin_addr, cli->ip_addr, INET_ADDRSTRLEN);
+        inet_ntop(AF_INET, &client_addr.sin_addr, cli->ip_addr, INET_ADDRSTRLEN);
 
         // Create a new thread to handle the client
         if (pthread_create(&thread, NULL, func, (void *)cli) != 0) {
@@ -115,9 +112,8 @@ int main()
             free(cli);
         }
 
-        // Either join or detach threads based on your memory management strategy.
-        //pthread_join(thread, NULL); // Join threads
-        pthread_detach(thread); // Detach threads 
+        // Detach thread
+        pthread_detach(thread); 
     }
 
     // Close socket (never reached in this version)
