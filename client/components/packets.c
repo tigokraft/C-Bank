@@ -1,6 +1,8 @@
 #include <string.h>
+#include <stdio.h>
 
 #include "signin.c"
+#include "login.c"
 
 struct user {
     char* username;
@@ -24,6 +26,22 @@ char* create(int option) {
 
         if (packet != NULL) { // Check if allocation was successful
             snprintf(packet, packetSize, "1%s;%s", u.username, u.password);
+        } else {
+            fprintf(stderr, "Memory allocation failed!\n");
+        }
+    }
+    else if (option == 2) {
+        u.username = strdup(loginUser());
+        u.password = strdup(loginPass());
+
+        // Calculate the required size for the packet
+        packetSize = strlen("1") + strlen(u.username) + strlen(u.password) + strlen(";") + 1; // +1 for the null terminator
+        
+        // Dynamically allocate memory for the packet
+        packet = (char*)malloc(packetSize);
+
+        if (packet != NULL) { // Check if allocation was successful
+            snprintf(packet, packetSize, "2%s;%s", u.username, u.password);
         } else {
             fprintf(stderr, "Memory allocation failed!\n");
         }
