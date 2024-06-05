@@ -25,12 +25,5 @@ char* loginPass() {
     fgets(pass, sizeof(pass), stdin);fflush(stdin);
     pass[strcspn(pass, "\n")] = 0; 
 
-    // Check if the password is correct
-    if (strcmp(pass, "password") == 0) {
-        result = "password"; // return the password if it's correct
-    } else {
-        result = NULL; // return NULL if the password is incorrect
-    }
-
     return result;
 }
