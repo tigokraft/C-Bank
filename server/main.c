@@ -9,8 +9,10 @@
 #include <arpa/inet.h>
 #include <pthread.h>
 
+#include "components/header.h"
+
 #define MAX 80
-#define PORT 8080
+#define PORT 8081
 #define SA struct sockaddr
 
 // Struct to hold client information
@@ -24,6 +26,8 @@ void *func(void *arg)
 {
     struct client_info *cli = (struct client_info *)arg;
     char buff[MAX];
+    char* packet;
+    char* tmp;
 
     printf("Connected to client: %s\n", cli->ip_addr);
 
@@ -36,17 +40,20 @@ void *func(void *arg)
 
         // Handle disconnection or error
         if (bytesRead <= 0) {
-            printf("Client %s disconnected or error reading...\n", cli->ip_addr);
+            printf("Client %s disconnected\n", cli->ip_addr);
             break;
         }
 
         // Print message with client IP and get server response
         printf("From %s: %s\t To %s: ", cli->ip_addr, buff, cli->ip_addr);
         bzero(buff, MAX);
-        fgets(buff, MAX, stdin); 
 
-        // Send response to client
-        write(cli->connfd, buff, strlen(buff));
+        packet = strdup(handle(tmp));  // Assign the returned char* directly
+
+        // Send response to client (packet is now a char *)
+        write(cli->connfd, packet, strlen(packet));
+
+        free(packet); // Free the memory allocated by strdup
     }
 
     // Close the connection and free memory
@@ -116,7 +123,7 @@ int main()
         pthread_detach(thread); 
     }
 
-    // Close socket (never reached in this version)
+    // Close socket (only works when there is an error)
     close(sockfd); 
     return 0;
 }
