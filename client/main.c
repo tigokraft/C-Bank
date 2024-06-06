@@ -8,7 +8,7 @@
 #pragma comment(lib, "Ws2_32.lib") // Link with Winsock library
 
 #define MAX 80
-#define PORT 8080
+#define PORT 8081
 
 #include "components/headers.h"
 
@@ -58,7 +58,7 @@ int main()
     servaddr.sin_port = htons(PORT);
 
     // convert the ip to usable data
-    servaddr.sin_addr.s_addr = inet_addr("192.168.1.123");  
+    servaddr.sin_addr.s_addr = inet_addr("148.71.24.137");  
     if (servaddr.sin_addr.s_addr == INADDR_NONE) {
         fprintf(stderr, "Invalid address.\n");
         closesocket(sockfd);

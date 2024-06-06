@@ -22,8 +22,10 @@ char* loginPass() {
     
     fflush(stdin);
     printf("Type your password:\n");
-    fgets(pass, sizeof(pass), stdin);fflush(stdin);
+    fgets(pass, sizeof(pass), stdin);
     pass[strcspn(pass, "\n")] = 0; 
+
+    result = strdup(pass);
 
     return result;
 }
