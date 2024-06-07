@@ -5,51 +5,55 @@
 #include "login.c"
 
 struct user {
+    char* email;
     char* username;
     char* password;
 };
 
 char* create(int option) {
-    struct user u;
+    struct user user;
     char* packet = NULL;
     size_t packetSize = 0; // To track the actual size of the packet
 
     if (option == 1) { // sign in
-        u.username = strdup(signUser());
-        u.password = strdup(signPass());
+        user.email = strdup(signEmail());
+        user.username = strdup(signUser());
+        user.password = strdup(signPass());
 
         // Calculate the required size for the packet
-        packetSize = strlen("1") + strlen(u.username) + strlen(u.password) + strlen(";") + 1; // +1 for the null terminator
+        packetSize = strlen("1") + strlen(user.username) + strlen(user.password)  + strlen(user.email) + 3; // +3 for the null terminator and separators
         
         // Dynamically allocate memory for the packet
         packet = (char*)malloc(packetSize);
 
         if (packet != NULL) { // Check if allocation was successful
-            snprintf(packet, packetSize, "1%s;%s", u.username, u.password);
+            snprintf(packet, packetSize, "1%s;%s;%s",user.email, user.username, user.password);
         } else {
             fprintf(stderr, "Memory allocation failed!\n");
         }
     }
     else if (option == 2) {
-        u.username = strdup(loginUser());
-        u.password = strdup(loginPass());
+        user.email = strdup(loginUser());
+        user.username = strdup(loginUser());
+        user.password = strdup(loginPass());
 
         // Calculate the required size for the packet
-        packetSize = strlen("1") + strlen(u.username) + strlen(u.password) + strlen(";") + 1; // +1 for the null terminator
+        packetSize = strlen("1") + strlen(user.username) + strlen(user.password) + strlen(user.email) + 3; // +3 for the null terminator and separators
         
         // Dynamically allocate memory for the packet
         packet = (char*)malloc(packetSize);
 
         if (packet != NULL) { // Check if allocation was successful
-            snprintf(packet, packetSize, "2%s;%s", u.username, u.password);
+            snprintf(packet, packetSize, "2%s;%s;%s",user.email, user.username, user.password);
         } else {
             fprintf(stderr, "Memory allocation failed!\n");
         }
     }
     
     // Remember to free memory for usernames and passwords
-    free(u.username);
-    free(u.password);
+    free(user.email);
+    free(user.username);
+    free(user.password);
 
     return packet;
 }

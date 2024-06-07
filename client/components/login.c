@@ -29,3 +29,17 @@ char* loginPass() {
 
     return result;
 }
+
+char* loginEmail() {
+    char* email;
+    char text[40];
+
+    fflush(stdin);
+    printf("Type your email: ");
+    fgets(text, sizeof(text), stdin);
+    text[strcspn(text, "\n")] = 0;
+
+    email = strdup(text);
+
+    return email;
+}
