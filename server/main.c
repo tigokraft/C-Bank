@@ -37,15 +37,19 @@ void *func(void *arg)
 
         // Read message from client
         int bytesRead = read(cli->connfd, buff, sizeof(buff));
+        printf("bytes received: %d\n", bytesRead);
+
+        tmp = strdup(buff);
 
         // Handle disconnection or error
-        if (bytesRead <= 0) {
-            printf("Client %s disconnected\n", cli->ip_addr);
+        if (bytesRead <= 0) { 
+            printf("Client %s disconnected\n", cli->ip_addr);\
+            printf("received: %s\n", tmp);
             break;
         }
 
         // Print message with client IP and get server response
-        printf("From %s: %s\t To %s: ", cli->ip_addr, buff, cli->ip_addr);
+        printf("From %s: %s\t To %s: ", cli->ip_addr, tmp, cli->ip_addr);
         bzero(buff, MAX);
 
         packet = strdup(handle(tmp));  // Assign the returned char* directly

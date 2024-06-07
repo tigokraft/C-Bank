@@ -30,10 +30,10 @@ void insertion(FILE *file, char packet[80]) {
     }
 	
     // Find the username
-    for (int i = 1; i <= divider && i < MAX_USERNAME_LENGTH; i++) { 
+    for (int i = 1; i < divider && i < MAX_USERNAME_LENGTH; i++) { 
         u.username[i - 1] = packet[i];
     }
-    u.username[divider] = '\0'; // Null-terminate the username
+    u.username[divider - 1] = '\0'; // Null-terminate the username
 
     // size of the username (used to find 0 position in i)
     int userSize = strlen(u.username) + 1; // Add 1 to include the null terminator
