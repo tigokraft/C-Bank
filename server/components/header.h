@@ -1,2 +1,2 @@
 #include "handler.c"
-char* handle(char packet[80]);
+char* handle(char* packet);
