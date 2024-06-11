@@ -20,11 +20,14 @@ void func(SOCKET sockfd, char* packet)
     // Send the message
     send(sockfd, messageToSend, messageLen, 0); 
 
+    free(packet);
+
     // Receive and print response (optional, depends on your server logic)
     char buff[MAX];
     memset(buff, 0, sizeof(buff));
     recv(sockfd, buff, sizeof(buff), 0);
-    printf("From Server: %s", buff); 
+    printf("From Server: %s\n", buff); 
+    system("pause");
 }
 
 
