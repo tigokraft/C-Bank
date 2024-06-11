@@ -7,18 +7,20 @@
 #define MAX_PASSWORD_LENGTH 16
 
 struct userSave {
-    char email [MAX_EMAIL_LENGTH];
-    char username[MAX_USERNAME_LENGTH];
-    char password[MAX_PASSWORD_LENGTH];
+    char email [32];
+    char username[32];
+    char password[16];
 };
 
-void insertion(FILE *file, char packet[80]) {
+void insertion(FILE *file, FILE* individual, char packet[80]) {
     struct userSave u;
     bool eFound = false;
     bool uFound = false;
 
     int emailSize = 0;
     int userSize = 0;
+
+    char id;
 
     // Use the file pointer passed in
     FILE *fptr = file;

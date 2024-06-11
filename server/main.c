@@ -12,7 +12,7 @@
 #include "components/header.h"
 
 #define MAX 80
-#define PORT 8081
+#define PORT 8080
 #define SA struct sockaddr
 
 // Struct to hold client information
@@ -46,9 +46,8 @@ void *func(void *arg)
         else {
             printf("bytes received: %d\n", bytesRead);
             tmp = strdup(buff);
-            printf("%c", tmp[0]);
             // Print message with client IP and get server response
-            printf("From %s: %s\t To %s: ", cli->ip_addr, tmp, cli->ip_addr);
+            printf("From %s: %s\n", cli->ip_addr, tmp);
             bzero(buff, MAX);
 
             packet = handle(tmp);  // Assign the returned char* directly
@@ -98,7 +97,7 @@ int main()
 
     printf("Server listening on port %d...\n", PORT);
 
-    while (1) {
+    while (true) {
         struct client_info *cli = malloc(sizeof(*cli)); // Allocate for client_info
         pthread_t thread;
 
