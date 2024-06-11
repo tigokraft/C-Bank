@@ -4,15 +4,14 @@
 #include "database/components/headers.h"
 
 char* handle(char* packet) {
-    char* result = "worked";
+    char* result;
 
     if (packet == NULL) {
-        return "Error: Invalid input"; // Example
+        return "Error: Invalid input";
     }
 
     int value = packet[0] - '0';
-    printf("%d\n", value);
-
+    
     manager(value, packet);
     
     return result;

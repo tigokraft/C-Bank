@@ -9,10 +9,7 @@
 #include "lookup.c"
 #include "delete.c"
 
-// No global file pointer
-//FILE *fptr; 
-
-char* manager(int option, char packet[80]) {
+void manager(int option, char packet[80]) {
     char filePath[15];
     char firstChar = tolower(packet[1]);
     snprintf(filePath, sizeof(filePath), "data/%c.txt", firstChar);
@@ -29,14 +26,19 @@ char* manager(int option, char packet[80]) {
     if (option == 1) {
         fptr = fopen(filePath, "a"); 
         if (fptr == NULL) {
-            return "Error opening file"; 
+            printf("Error opening file");
         }
         insertion(fptr, packet);  // Pass FILE* to insertion
+    }
+    else if (option == 2) {
+        fptr = fopen(filePath, "r");
+        if (fptr == NULL) {
+            printf("File doesn't exist");
+        }
+        lookup(fptr, packet);
     }
     
     if (fptr != NULL) {
         fclose(fptr); // Close file after use
     }
-
-    return "working"; // Default success message
 }
