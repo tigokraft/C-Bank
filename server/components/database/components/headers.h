@@ -1,2 +1,2 @@
 #include "handle.c"
-void manager(int option, char packet[80]);
+bool manager(int option, char packet[80]);

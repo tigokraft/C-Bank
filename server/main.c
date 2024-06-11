@@ -12,7 +12,7 @@
 #include "components/header.h"
 
 #define MAX 80
-#define PORT 8080
+#define PORT 8081
 #define SA struct sockaddr
 
 // Struct to hold client information
@@ -28,6 +28,7 @@ void *func(void *arg)
     char buff[MAX];
     char* packet;
     char* tmp;
+    bool validation;
     bool connected = true;
 
     printf("Connected to client: %s\n", cli->ip_addr);
@@ -44,7 +45,7 @@ void *func(void *arg)
             connected = false;
         }
         else {
-            printf("bytes received: %d\n", bytesRead);
+            printf("\nbytes received: %d\n", bytesRead);
             tmp = strdup(buff);
             // Print message with client IP and get server response
             printf("From %s: %s\n", cli->ip_addr, tmp);
@@ -53,6 +54,7 @@ void *func(void *arg)
             packet = handle(tmp);  // Assign the returned char* directly
             free(tmp); // Free the memory allocated by strdup
 
+            printf("result = %s\n", packet);
             // Send response to client (packet is now a char *)
             write(cli->connfd, packet, strlen(packet));
         }

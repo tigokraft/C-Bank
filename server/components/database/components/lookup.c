@@ -1,7 +1,8 @@
 #include <string.h>
 #include <stdio.h>
+#include <stdbool.h>
 
-char* lookup(FILE* file, char packet[80]) {
+bool lookup(FILE* file, FILE* individual, char packet[80]) {
     printf("\npacket = %s\n", packet);
 
     char string[80];

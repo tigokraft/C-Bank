@@ -12,7 +12,7 @@ struct userSave {
     char password[16];
 };
 
-void insertion(FILE *file, FILE* individual, char packet[80]) {
+bool insertion(FILE *file, FILE* individual, char packet[80]) {
     struct userSave u;
     bool eFound = false;
     bool uFound = false;
@@ -27,7 +27,7 @@ void insertion(FILE *file, FILE* individual, char packet[80]) {
 
     if (fptr == NULL) { // Check for valid file pointer
         perror("Error in insertion: Invalid file pointer");
-        return;
+        return false;
     }
 
     printf("\npacket = %s\n", packet);
@@ -40,7 +40,6 @@ void insertion(FILE *file, FILE* individual, char packet[80]) {
             u.email[i-1] = '\0';
             eFound = true;
             emailSize = strlen(u.email);
-            printf("email = %s  length = %d\n", u.email, emailSize);
         }
         if (packet[i] != ';' && (eFound == true && uFound == false)) {
             u.username[i - emailSize - 2] = packet[i];
@@ -49,23 +48,24 @@ void insertion(FILE *file, FILE* individual, char packet[80]) {
             u.username[i - emailSize - 2] = '\0';
             uFound = true;
             userSize = strlen(u.username);
-            printf("name = %s  length = %d\n", u.username, userSize);
         }
         if (packet[i] != ';' && (eFound == true && uFound == true)) {
             u.password[i - emailSize - userSize - 3] = packet[i];
         }
         if (i == strlen(packet)) {
             u.password[i - emailSize - userSize - 3] = '\0';
-            printf("pass = %s  length = %ld\n", u.password, strlen(u.password));
         }
     }
 
+    // print to the screen
     printf("email: %s  |  ", u.email);
     printf("user: %s  |  ", u.username);
     printf("pass: %s\n", u.password);
 
     // Write to file
-    fprintf(fptr, "email: %s  |  ", u.email);
-    fprintf(fptr, "user: %s  |  ", u.username);
-    fprintf(fptr, "pass: %s\n", u.password);
+    fprintf(fptr, "email: %s\n", u.email);
+    fprintf(individual, "user: %s  |  ", u.username);
+    fprintf(individual, "pass: %s\n", u.password);
+
+    return true;
 }
