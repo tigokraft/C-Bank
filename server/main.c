@@ -12,7 +12,7 @@
 #include "components/header.h"
 
 #define MAX 80
-#define PORT 8081
+#define PORT 8080
 #define SA struct sockaddr
 
 // Struct to hold client information
@@ -28,43 +28,41 @@ void *func(void *arg)
     char buff[MAX];
     char* packet;
     char* tmp;
+    bool connected = true;
 
     printf("Connected to client: %s\n", cli->ip_addr);
 
-    // infinite loop for chat
-    for (;;) {
+    while (connected) {
         bzero(buff, MAX);
 
         // Read message from client
         int bytesRead = read(cli->connfd, buff, sizeof(buff));
-        printf("bytes received: %d\n", bytesRead);
-
-        tmp = strdup(buff);
 
         // Handle disconnection or error
         if (bytesRead <= 0) { 
-            printf("Client %s disconnected\n", cli->ip_addr);\
-            printf("received: %s\n", tmp);
-            break;
+            printf("Client %s disconnected\n", cli->ip_addr);
+            connected = false;
         }
+        else {
+            printf("bytes received: %d\n", bytesRead);
+            tmp = strdup(buff);
+            // Print message with client IP and get server response
+            printf("From %s: %s\n", cli->ip_addr, tmp);
+            bzero(buff, MAX);
 
-        // Print message with client IP and get server response
-        printf("From %s: %s\t To %s: ", cli->ip_addr, tmp, cli->ip_addr);
-        bzero(buff, MAX);
+            packet = handle(tmp);  // Assign the returned char* directly
+            free(tmp); // Free the memory allocated by strdup
 
-        packet = strdup(handle(tmp));  // Assign the returned char* directly
-
-        // Send response to client (packet is now a char *)
-        write(cli->connfd, packet, strlen(packet));
-
-        free(packet); // Free the memory allocated by strdup
+            // Send response to client (packet is now a char *)
+            write(cli->connfd, packet, strlen(packet));
+        }
     }
 
-    // Close the connection and free memory
     close(cli->connfd);
     free(cli);
     pthread_exit(NULL);
 }
+
 
 int main()
 {
@@ -99,7 +97,7 @@ int main()
 
     printf("Server listening on port %d...\n", PORT);
 
-    while (1) {
+    while (true) {
         struct client_info *cli = malloc(sizeof(*cli)); // Allocate for client_info
         pthread_t thread;
 

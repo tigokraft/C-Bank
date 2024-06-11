@@ -1,17 +1,26 @@
 #include <stdio.h>
 #include <string.h>
+#include <stdbool.h>
 
+#define MAX_EMAIL_LENGTH 32
 #define MAX_USERNAME_LENGTH 32
 #define MAX_PASSWORD_LENGTH 16
 
 struct userSave {
-    char username[MAX_USERNAME_LENGTH];
-    char password[MAX_PASSWORD_LENGTH];
+    char email [32];
+    char username[32];
+    char password[16];
 };
 
-void insertion(FILE *file, char packet[80]) {
+void insertion(FILE *file, FILE* individual, char packet[80]) {
     struct userSave u;
-    int divider = 0;
+    bool eFound = false;
+    bool uFound = false;
+
+    int emailSize = 0;
+    int userSize = 0;
+
+    char id;
 
     // Use the file pointer passed in
     FILE *fptr = file;
@@ -21,29 +30,42 @@ void insertion(FILE *file, char packet[80]) {
         return;
     }
 
-    // Find the divider (';') in the packet
-    for (int i = 1; i < strlen(packet); i++) {
-        if (packet[i] == ';') {
-            divider = i;
-            break; // Exit loop once divider is found
+    printf("\npacket = %s\n", packet);
+
+    for (int i = 1; i <= strlen(packet); i++) {
+        if (packet[i] != ';' && eFound == false) {
+            u.email[i-1] = packet[i];
+        }
+        if (packet[i] == ';' && eFound == false) {
+            u.email[i-1] = '\0';
+            eFound = true;
+            emailSize = strlen(u.email);
+            printf("email = %s  length = %d\n", u.email, emailSize);
+        }
+        if (packet[i] != ';' && (eFound == true && uFound == false)) {
+            u.username[i - emailSize - 2] = packet[i];
+        }
+        if (packet[i] == ';' && i > emailSize + 1) {
+            u.username[i - emailSize - 2] = '\0';
+            uFound = true;
+            userSize = strlen(u.username);
+            printf("name = %s  length = %d\n", u.username, userSize);
+        }
+        if (packet[i] != ';' && (eFound == true && uFound == true)) {
+            u.password[i - emailSize - userSize - 3] = packet[i];
+        }
+        if (i == strlen(packet)) {
+            u.password[i - emailSize - userSize - 3] = '\0';
+            printf("pass = %s  length = %ld\n", u.password, strlen(u.password));
         }
     }
-	
-    // Find the username
-    for (int i = 1; i < divider && i < MAX_USERNAME_LENGTH; i++) { 
-        u.username[i - 1] = packet[i];
-    }
-    u.username[divider - 1] = '\0'; // Null-terminate the username
 
-    // size of the username (used to find 0 position in i)
-    int userSize = strlen(u.username) + 1; // Add 1 to include the null terminator
+    printf("email: %s  |  ", u.email);
+    printf("user: %s  |  ", u.username);
+    printf("pass: %s\n", u.password);
 
-    // Find the password
-    for (int i = divider + 1; i < strlen(packet) && (i - userSize) < MAX_PASSWORD_LENGTH; i++) { 
-        u.password[i - userSize] = packet[i];
-    }
-    u.password[strlen(packet) - userSize] = '\0'; // Null-terminate the password
-
-    fprintf(fptr, "user: %s | ", u.username);
+    // Write to file
+    fprintf(fptr, "email: %s  |  ", u.email);
+    fprintf(fptr, "user: %s  |  ", u.username);
     fprintf(fptr, "pass: %s\n", u.password);
 }
