@@ -5,7 +5,6 @@
 #include <ctype.h>
 
 char* signUser() {
-    system("cls");
     char user[32];
     char* username;
 
@@ -51,6 +50,7 @@ char* signPass() {
 }
 
 char* signEmail() {
+    system("cls");
     char* email;
     char text[40];
 

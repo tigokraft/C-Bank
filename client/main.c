@@ -8,11 +8,11 @@
 #pragma comment(lib, "Ws2_32.lib") // Link with Winsock library
 
 #define MAX 80
-#define PORT 8081
+#define PORT 2001
 
 #include "components/headers.h"
 
-void func(SOCKET sockfd, char* packet)
+bool func(SOCKET sockfd, char* packet)
 {
     const char* messageToSend = strdup(packet); // The string to send
     int messageLen = strlen(messageToSend); // Calculate string length
@@ -26,8 +26,16 @@ void func(SOCKET sockfd, char* packet)
     char buff[MAX];
     memset(buff, 0, sizeof(buff));
     recv(sockfd, buff, sizeof(buff), 0);
-    printf("From Server: %s\n", buff); 
-    system("pause");
+    printf("From Server: %s\n", buff);
+    Sleep(2000);
+
+    if (strcmp(buff, "true") == 0) {
+        return true;
+    }
+    else {
+        return false;
+    }
+
 }
 
 
@@ -38,7 +46,9 @@ int main()
     struct sockaddr_in servaddr;
 
     int option = 0;
+    int option2 = 0;
     bool valid = true;
+    bool session = false;
     char* packet; 
 
 
@@ -85,7 +95,27 @@ int main()
         case 1:
             packet = strdup(create(1));
             printf("%s\n", packet);
-            func(sockfd, packet);
+            if (func(sockfd, packet)) {
+                session = true;
+                do
+                {
+                    option2 = menu2();
+                    switch (option2)
+                    {
+                    case 1:
+                        sendMoney();
+                        break;
+                    case 2: 
+                        break;
+                    case 8:
+                        session = false;
+                    default:
+                        break;
+                    }
+                } while (session);
+                
+                
+            }
             break;
         case 2:
             packet = strdup(create(2));

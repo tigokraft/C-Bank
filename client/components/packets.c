@@ -33,18 +33,17 @@ char* create(int option) {
         }
     }
     else if (option == 2) {
-        user.email = strdup(loginUser());
-        user.username = strdup(loginUser());
+        user.email = strdup(loginEmail());
         user.password = strdup(loginPass());
 
         // Calculate the required size for the packet
-        packetSize = strlen("1") + strlen(user.username) + strlen(user.password) + strlen(user.email) + 3; // +3 for the null terminator and separators
+        packetSize = strlen("1") + strlen(user.password) + strlen(user.email) + 2; // +2 for the null terminator and separators
         
         // Dynamically allocate memory for the packet
         packet = (char*)malloc(packetSize);
 
         if (packet != NULL) { // Check if allocation was successful
-            snprintf(packet, packetSize, "2%s;%s;%s",user.email, user.username, user.password);
+            snprintf(packet, packetSize, "2%s;%s",user.email, user.password);
         } else {
             fprintf(stderr, "Memory allocation failed!\n");
         }
