@@ -63,8 +63,8 @@ bool insertion(FILE *file, FILE* individual, char packet[80]) {
     printf("pass: %s\n", u.password);
 
     // Write to file
-    fprintf(fptr, "email: %s\n", u.email);
-    fprintf(individual, "user: %s  |  ", u.username);
+    fprintf(fptr, "%s\n", u.email);
+    fprintf(individual, "user: %s\n", u.username);
     fprintf(individual, "pass: %s\n", u.password);
 
     return true;

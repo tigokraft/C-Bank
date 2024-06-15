@@ -5,9 +5,9 @@
 
 int main() {
     char packet[80];
-    strcpy(packet, "1tiagoco2008@gmail.com;tigokraft;NotTigo2008!");
+    strcpy(packet, "2tiagoco2008@gmail.com;tigokraft;NotTigo2008!");
 
-    manager(1, packet);
+    manager(2, packet);
 
     return 0;
 }

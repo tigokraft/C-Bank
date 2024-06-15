@@ -10,14 +10,28 @@
 #include "lookup.c"
 #include "delete.c"
 
-bool manager(int option, char packet[80]) {
-    bool validation = false;
+char* validation(bool check) {
+    char* result;
+
+    if (check) {
+        result = "true";
+    }
+    else {
+        result = "false";
+    }
+
+    return result;
+}
+
+char* manager(int option, char packet[80]) {
+    bool valid = false;
 
     char filePath[15];
     char firstChar = tolower(packet[1]);
     snprintf(filePath, sizeof(filePath), "data/%c.txt", firstChar);
     char individualPath[64];
     char email[32];
+    char* result;
     
 
     for (int i = 1; i <= strlen(packet); i++) {
@@ -36,7 +50,7 @@ bool manager(int option, char packet[80]) {
     // Create data directory if it doesn't exist
     struct stat st = {0};
     if (stat("data", &st) == -1) {
-        mkdir("data", 0700); // 0700 gives read/write/execute permissions to the owner
+        mkdir("data", 0700);
     }
     if (stat("data/individuals", &st) == -1) {
         mkdir("data/individuals", 0700); 
@@ -54,14 +68,22 @@ bool manager(int option, char packet[80]) {
             printf("Error opening file");
         }
         individual = fopen(individualPath, "a+");
-        validation = insertion(fptr, individual, packet);
+        valid = insertion(fptr, individual, packet);
+        result = validation(valid);
     }
     else if (option == 2) {
         fptr = fopen(filePath, "r");
+        individual = fopen(individualPath, "r");
         if (fptr == NULL) {
             printf("File doesn't exist");
         }
-        validation = lookup(fptr, individual, packet);
+        if (individual == NULL) {
+            result = "User doesn't exist!\n";
+        }
+        else {
+            valid = lookup(fptr, individual, packet);
+            result = validation(valid);
+        }
     }
     
 
@@ -70,6 +92,5 @@ bool manager(int option, char packet[80]) {
         fclose(fptr);
     }
 
-
-    return validation;
+    return result;
 }

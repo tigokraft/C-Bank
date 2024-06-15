@@ -14,14 +14,7 @@ char* handle(char* packet) {
 
     int value = packet[0] - '0';
     
-    valid = manager(value, packet);
-
-    if (valid == true) {
-        result = "true";
-    }
-    else {
-        result = "false";
-    }
+    result = manager(value, packet);
 
     return result;
 }
