@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <windows.h> 
+#include <string.h>
 #include <conio.h>
 
 void logo() {
@@ -126,17 +127,15 @@ int menu2() {
 struct send {
     char email[32];
     float amount;
-    char message[50]
+    char message[100];
 };
 
-int moneyMenu() {
+int moneyMenu(char email[32], float amount, char message[100]) {
     int position = 1;
     int keyPressed = 0;
 
-    struct send s;
-
-    #define MINMENU2 1 
-    #define MAXMENU2 5
+    #define MINMONEYMENU 1 
+    #define MAXMONEYMENU 5
 
     do
     {
@@ -144,26 +143,26 @@ int moneyMenu() {
 
         logo();
 
-        arrowHere(1,position); printf(" Send to: %s \n", s.email);
-        arrowHere(2,position); printf(" Amount: %.2f \n", s.amount);
-        arrowHere(3,position); printf(" Message(optional): %s \n", s.message);
+        arrowHere(1,position); printf(" Send to: %s \n", email);
+        arrowHere(2,position); printf(" Amount: %.2f \n", amount);
+        arrowHere(3,position); printf(" Message(optional): %s \n", message);
         arrowHere(4,position); printf(" Send \n");
         arrowHere(5,position); printf(" Cancel \n");
 
         keyPressed = getch();
         fflush(stdin);
 
-        if (keyPressed == 80 && position != MAXMENU2) {
+        if (keyPressed == 80 && position != MAXMONEYMENU) {
             position++;
         }
-        else if (keyPressed == 72 && position != MINMENU2) {
+        else if (keyPressed == 72 && position != MINMONEYMENU) {
             position--;
         }
-        else if (position == MAXMENU2 && keyPressed == 80) {
-            position = MINMENU2;
+        else if (position == MAXMONEYMENU && keyPressed == 80) {
+            position = MINMONEYMENU;
         }
-        else if(position == MINMENU2 && keyPressed == 72) {
-            position = MAXMENU2;
+        else if(position == MINMONEYMENU && keyPressed == 72) {
+            position = MAXMONEYMENU;
         }
         else {
             position = position;
@@ -174,17 +173,22 @@ int moneyMenu() {
     return position;
 }
 
+char* money(char email[32], float amount, char message[100]);
+
 char* sendMoney() {
     char* result;
     int option = 0;
 
     struct send send;
-    
+    send.email[0] = '\0';
+    send.amount = 0.0;
+    send.message[0] = '\0';
+
     bool valid = true;
         
     do
     {
-        option = sendMenu();
+        option = moneyMenu(send.email, send.amount, send.message);
 
         switch (option)
         {
@@ -194,26 +198,35 @@ char* sendMoney() {
             printf("Receiver email: ");
             fgets(send.email, sizeof(send.email), stdin);
             send.email[strcspn(send.email, "\n")] = 0;
-            break;   
+            break;
         case 2:
             system("cls");
             fflush(stdin);
             printf("Amount: ");
-            scanf("%f", &send.amount);
+            if (scanf("%f", &send.amount) == 0) {
+                printf("INVALID VALUE\n");
+                while(getchar() != '\n');
+            }
             break;
         case 3:
             system("cls");
             fflush(stdin);
-            printf("Message: ");
+            printf("Message(max 100 characters): ");
             fgets(send.message, sizeof(send.message), stdin);
             send.message[strcspn(send.message, "\n")] = 0;
+            break;
+        case 4:
+            result = money(send.email, send.amount, send.message);
+            valid = false;
+            break;
+        case 5:
+            valid = false;
+            result = "false";
             break;
         default:
             break;
         }
     } while (valid);
-    
-    
 
     return result;
 }

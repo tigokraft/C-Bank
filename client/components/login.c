@@ -8,7 +8,7 @@ char* loginPass() {
     char* result;
     
     fflush(stdin);
-    printf("Type your password:\n");
+    printf("Type your password: ");
     fgets(pass, sizeof(pass), stdin);
     pass[strcspn(pass, "\n")] = 0; 
 
