@@ -11,7 +11,7 @@
 
 #include "components/header.h"
 
-#define MAX 80
+#define MAX 200
 #define PORT 2001
 #define SA struct sockaddr
 
