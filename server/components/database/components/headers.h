@@ -1,2 +1,3 @@
 #include "handle.c"
-bool manager(int option, char packet[80]);
+char* manager(int option, char packet[80]);
+char* validator(bool check);
