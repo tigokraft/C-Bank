@@ -8,7 +8,7 @@
 #pragma comment(lib, "Ws2_32.lib") // Link with Winsock library
 
 #define MAX 200
-#define PORT 2001
+#define PORT 2000
 
 #include "components/headers.h"
 
@@ -27,12 +27,12 @@ bool func(SOCKET sockfd, char* packet)
     memset(buff, 0, sizeof(buff));
     recv(sockfd, buff, sizeof(buff), 0);
     printf("From Server: %s\n", buff);
-    Sleep(2000);
 
     if (strcmp(buff, "true") == 0) {
         return true;
     }
     else {
+        Sleep(2000);
         return false;
     }
 
@@ -94,6 +94,7 @@ int main()
         {
         case 1:
             packet = strdup(create(1));
+            loading();
             if (func(sockfd, packet)) {
                 session = true;
                 do
@@ -106,6 +107,12 @@ int main()
                         func(sockfd, packet);
                         break;
                     case 2: 
+                        packet = strdup(deposit());
+                        func(sockfd, packet);
+                        break;
+                    case 3:
+                        packet = strdup(loan());
+                        func(sockfd, packet);
                         break;
                     case 9:
                         clear();
@@ -121,6 +128,7 @@ int main()
         case 2:
             packet = strdup(create(2));
             if (func(sockfd, packet)) {
+                loading();
                 session = true;
                 do
                 {
@@ -135,7 +143,13 @@ int main()
                         break;
                     case 2:
                         packet = strdup(deposit());
-                        // func(sockfd, packet);
+                        func(sockfd, packet);
+                        break;
+                    case 3:
+                        packet = strdup(loan());
+                        if (packet != NULL) {
+                            func(sockfd, packet);
+                        }
                         break;
                     case 9:
                         clear();

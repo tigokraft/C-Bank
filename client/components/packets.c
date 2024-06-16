@@ -68,29 +68,39 @@ char* create(int option) {
     return packet;
 }
 
+
 char* deposit() {
-    char* result;
+    char* packet = NULL;
     float value = depositMenu();
     char* email = strdup(getMail());
 
     size_t packetSize;
     
     printf("email: %s\n", email);
-    printf("value: %f\n", value);
+    printf("value: %.2f\n", value);
+
+    packetSize = strlen(email) + floatSize(value) + 4;
+    packet = (char*)malloc(packetSize);
+
+    if (packet != NULL) {
+        snprintf(packet, packetSize, "4%s;%.2f", email, value);
+    }
     
+    printf("packet = %s\n", packet);
+
     system("pause");
 
-    return result;
+    return packet;
 }
 
 char* money(char email[32], float amount, char message[100]) {
-    char* packet;
+    char* packet = NULL;
     size_t packetSize;
 
     printf("email %s\namount %.2f\nmessage %s\n", email, amount, message);
 
     if (message[0] == '\0') {
-        packetSize = strlen(email) + 8;
+        packetSize = strlen(email) + floatSize(amount) + 4;
         packet = (char*)malloc(packetSize);
 
         if (packet != NULL) {
@@ -98,8 +108,8 @@ char* money(char email[32], float amount, char message[100]) {
         }
     }
     else {
-        printf("message = %ld\namount = %d", strlen(message), sizeof(amount));
-        packetSize = strlen(email) + sizeof(amount)+ strlen(message) + 5 ;
+        printf("message = %ld\namount = %d\n", strlen(message), floatSize(amount));
+        packetSize = strlen(email) + floatSize(amount) + strlen(message) + 5 + 3;
         packet = (char*)malloc(packetSize);
         printf("packet = %u\n", packetSize);
 
@@ -108,6 +118,66 @@ char* money(char email[32], float amount, char message[100]) {
         }
     }
     system("pause");
+
+    return packet;
+}
+
+struct loany {
+    float amount;
+    int loan;
+};
+
+char* loan() {
+    char* packet = NULL;
+    size_t packetSize;
+    bool valid = true;
+    bool sent = false;
+
+    char* email = getMail();
+
+    int option = 0;
+
+    struct loany l;
+
+    l.amount = 0.00;
+    l.loan = 0;
+
+    do
+    {
+        system("cls");
+        option = loanMenu(l.amount, l.loan);
+
+        if (option == 1) {
+            system("cls");
+            fflush(stdin);
+            printf("Amount: ");
+            if (scanf("%f", &l.amount) == 0) {
+                printf("INVALID VALUE\n");
+                while(getchar() != '\n');
+            }
+        }
+        else if (option == 2) {
+            system("cls");
+            l.loan = loanTypes();
+        }
+        else if (option == 3) {
+            sent = true;
+            valid = false;
+        }
+        else if (option == 4) {
+            valid = false;
+        }
+    } while (valid);
+    
+
+    if (sent) {
+        packetSize = strlen(email) + floatSize(l.amount) + 6;
+        packet = (char*)malloc(packetSize);
+
+        if (packet != NULL) {
+            snprintf(packet, packetSize, "5%s;%.2f;%d", email, l.amount, l.loan);
+        }
+    }
 
     return packet;
 }

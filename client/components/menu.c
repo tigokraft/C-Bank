@@ -22,6 +22,16 @@ void logo() {
     }
 }
 
+void loading() {
+    printf("Logging in...\n{");
+    for (int i = 0; i < 50; i++) {
+        printf("═");
+        Sleep(20);
+    }
+    printf("}\n");
+    Sleep(500);
+}
+
 // =========================================
 //              Arrow Printer
 // =========================================
@@ -94,8 +104,8 @@ int menu2() {
 
         arrowHere(1,position); printf(" Send Money \n");
         arrowHere(2,position); printf(" Deposit Money \n");
-        arrowHere(3,position); printf(" Balance \n");
-        arrowHere(4,position); printf(" Take a Loan \n");
+        arrowHere(3,position); printf(" Take a Loan \n");
+        arrowHere(4,position); printf(" Balance \n");
         arrowHere(5,position); printf(" Notifications \n");
         arrowHere(6,position); printf(" Get account info \n");
         arrowHere(7,position); printf(" Change password \n");
@@ -236,11 +246,99 @@ char* sendMoney() {
 float depositMenu() {
     float value = 0;
 
-    printf("Deposit amount:");
+    system("cls");
+    printf("Deposit amount: ");
 
     if (scanf("%f", &value) == 0) {
         while(getchar() != '\n');
     }
     
     return value;
+}
+
+int loanMenu(float amount, int loan) {
+    int position = 1;
+    int keyPressed = 0;
+
+    #define MINLOANMENU 1 
+    #define MAXLOANMENU 4
+
+    do
+    {
+        system("cls");
+
+        logo();
+
+        arrowHere(1,position); printf(" Amount: %.2f \n", amount);
+        arrowHere(2,position); printf(" Loan type: %.d \n", loan);
+        arrowHere(3,position); printf(" Loan \n");
+        arrowHere(4,position); printf(" Cancel \n");
+
+        keyPressed = getch();
+        fflush(stdin);
+
+        if (keyPressed == 80 && position != MAXLOANMENU) {
+            position++;
+        }
+        else if (keyPressed == 72 && position != MINLOANMENU) {
+            position--;
+        }
+        else if (position == MAXLOANMENU && keyPressed == 80) {
+            position = MINLOANMENU;
+        }
+        else if(position == MINLOANMENU && keyPressed == 72) {
+            position = MAXLOANMENU;
+        }
+        else {
+            position = position;
+        }
+
+    } while (keyPressed != 13);
+
+    return position;
+}
+
+int loanTypes() {
+    int position = 1;
+    int keyPressed = 0;
+
+    #define MINLOANTYPE 1 
+    #define MAXLOANTYPE 7
+
+    do
+    {
+        system("cls");
+
+        logo();
+
+        arrowHere(1,position); printf(" 3 months \n");
+        arrowHere(2,position); printf(" 6 months \n");
+        arrowHere(3,position); printf(" 9 months \n");
+        arrowHere(4,position); printf(" 12 months \n");
+        arrowHere(5,position); printf(" 15 months \n");
+        arrowHere(6,position); printf(" 18 months \n");
+        arrowHere(7,position); printf(" 21 months \n");
+
+        keyPressed = getch();
+        fflush(stdin);
+
+        if (keyPressed == 80 && position != MAXLOANTYPE) {
+            position++;
+        }
+        else if (keyPressed == 72 && position != MINLOANTYPE) {
+            position--;
+        }
+        else if (position == MAXLOANTYPE && keyPressed == 80) {
+            position = MINLOANTYPE;
+        }
+        else if(position == MINLOANTYPE && keyPressed == 72) {
+            position = MAXLOANTYPE;
+        }
+        else {
+            position = position;
+        }
+
+    } while (keyPressed != 13);
+
+    return position;
 }
