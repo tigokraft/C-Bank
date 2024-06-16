@@ -35,7 +35,7 @@ char* manager(int option, char packet[80]) {
 
     char* result = "false";
     
-    
+
     for (int i = 1; i <= strlen(packet); i++) {
         if (packet[i] != ';') {
             email[i-1] = packet[i];
@@ -88,7 +88,7 @@ char* manager(int option, char packet[80]) {
         fptr = fopen(filePath, "r");
         individual = fopen(individualPath, "r");
         if (fptr == NULL) {
-            printf("File doesn't exist");
+            printf("File doesn't exist\n");
         }
         if (individual == NULL) {
             result = "User doesn't exist!\n";
@@ -96,6 +96,15 @@ char* manager(int option, char packet[80]) {
         else {
             valid = lookup(fptr, individual, packet);
             result = validation(valid);
+        }
+    }
+    else if(option == 6) {
+        individual = fopen(individualPath, "r");
+        if (individual == NULL) {
+            printf("unkown balance\n");
+        }
+        else {
+            result = getBalance(individual, email);
         }
     }
     
