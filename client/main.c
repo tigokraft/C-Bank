@@ -35,6 +35,9 @@ bool func(SOCKET sockfd, char* packet)
         Sleep(2000);
         return false;
     }
+    if (buff[0] == '1') {
+        saveBal(buff);
+    }
 
 }
 
@@ -99,6 +102,7 @@ int main()
                 session = true;
                 do
                 {
+                    
                     option2 = menu2();
                     switch (option2)
                     {
@@ -114,6 +118,8 @@ int main()
                         packet = strdup(loan());
                         func(sockfd, packet);
                         break;
+                    case 4:
+                        packet = strdup(balance());
                     case 9:
                         clear();
                         session = false;

@@ -181,3 +181,19 @@ char* loan() {
 
     return packet;
 }
+
+char* balance() {
+    char* packet = NULL;
+    size_t packetSize;
+
+    char* email = getMail();
+
+    packetSize = strlen(email) + 3;
+    packet = (char*)malloc(packetSize);
+
+    if (packet != NULL) {
+        snprintf(packet, packetSize, "6%s", email);
+    }
+    
+    return packet;
+}
