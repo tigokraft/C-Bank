@@ -8,11 +8,12 @@
 #include <unistd.h>
 #include <arpa/inet.h>
 #include <pthread.h>
+#include <ctype.h>
 
 #include "components/header.h"
 
 #define MAX 200
-#define PORT 2001
+#define PORT 2000
 #define SA struct sockaddr
 
 // Struct to hold client information
@@ -41,6 +42,7 @@ void *func(void *arg)
         // Read message from client
         int bytesRead = read(cli->connfd, buff, sizeof(buff));
 
+
         // Handle disconnection or error
         if (bytesRead <= 0)
         {
@@ -49,18 +51,24 @@ void *func(void *arg)
         }
         else
         {
-            printf("\nbytes received: %d\n", bytesRead);
-            tmp = strdup(buff);
-            // Print message with client IP and get server response
-            printf("From %s: %s\n", cli->ip_addr, tmp);
-            bzero(buff, MAX);
+            if (isdigit(buff[0])) {
+                printf("\nbytes received: %d\n", bytesRead);
+                tmp = strdup(buff);
+                // Print message with client IP and get server response
+                printf("From %s: %s\n", cli->ip_addr, tmp);
+                bzero(buff, MAX);
 
-            packet = handle(tmp); // Assign the returned char* directly
-            free(tmp);            // Free the memory allocated by strdup
+                packet = handle(tmp); // Assign the returned char* directly
+                free(tmp);            // Free the memory allocated by strdup
 
-            printf("result = %s\n", packet);
-            // Send response to client (packet is now a char *)
-            write(cli->connfd, packet, strlen(packet));
+                printf("result = %s\n", packet);
+                // Send response to client (packet is now a char *)
+                write(cli->connfd, packet, strlen(packet));
+            }
+            else {
+                printf("BOT TRAFFIC DETECTED!!!\n");
+                write(cli->connfd, "404", 3);
+            }
         }
     }
 

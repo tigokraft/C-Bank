@@ -10,12 +10,15 @@ struct userSave {
     char email [32];
     char username[32];
     char password[16];
+    float balance;
 };
 
 bool insertion(FILE *file, FILE* individual, char packet[80]) {
     struct userSave u;
     bool eFound = false;
     bool uFound = false;
+
+    u.balance = 0.00;
 
     int emailSize = 0;
     int userSize = 0;
@@ -66,6 +69,7 @@ bool insertion(FILE *file, FILE* individual, char packet[80]) {
     fprintf(fptr, "%s\n", u.email);
     fprintf(individual, "user: %s\n", u.username);
     fprintf(individual, "pass: %s\n", u.password);
+    fprintf(individual, "balance: %.2f\n", u.balance);
 
     return true;
 }

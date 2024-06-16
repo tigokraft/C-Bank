@@ -4,6 +4,7 @@
 #include <sys/stat.h>
 #include <stdlib.h>
 #include <stdbool.h>
+#include <unistd.h>
 
 // Include header files instead of .c files
 #include "insert.c"
@@ -31,9 +32,10 @@ char* manager(int option, char packet[80]) {
     snprintf(filePath, sizeof(filePath), "data/%c.txt", firstChar);
     char individualPath[64];
     char email[32];
-    char* result;
-    
 
+    char* result = "false";
+    
+    
     for (int i = 1; i <= strlen(packet); i++) {
         if (packet[i] != ';') {
             email[i-1] = packet[i];
@@ -63,13 +65,24 @@ char* manager(int option, char packet[80]) {
 
     // Option handling (consider a switch statement for clarity)
     if (option == 1) {
-        fptr = fopen(filePath, "a+"); 
-        if (fptr == NULL) {
-            printf("Error opening file");
+        if (access(individualPath, F_OK) == 0) {
+            printf("User already exists\n");
+            result = strdup("User already exists");
         }
-        individual = fopen(individualPath, "a+");
-        valid = insertion(fptr, individual, packet);
-        result = validation(valid);
+        fptr = fopen(filePath, "a+");
+        if (fptr == NULL) {
+            printf("Error opening file\n");
+        }
+        else {
+            individual = fopen(individualPath, "w");
+            if (individual == NULL) {
+                printf("error creating user\n");
+            }
+
+            valid = insertion(fptr, individual, packet);
+            result = validation(valid);
+        }
+
     }
     else if (option == 2) {
         fptr = fopen(filePath, "r");
@@ -88,8 +101,10 @@ char* manager(int option, char packet[80]) {
     
 
     if (fptr != NULL) {
-        fclose(individual);
         fclose(fptr);
+    }
+    if (individual != NULL) {
+        fclose(individual);
     }
 
     return result;
