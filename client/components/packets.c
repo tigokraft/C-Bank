@@ -4,6 +4,9 @@
 
 #include "signin.c"
 #include "login.c"
+#include "misc.c"
+
+void tmpMail(char* email);
 
 struct user {
     char* email;
@@ -16,10 +19,14 @@ char* create(int option) {
     char* packet = NULL;
     size_t packetSize = 0; // To track the actual size of the packet
 
+    float amount = 0;
+
     if (option == 1) { // sign in
         user.email = strdup(signEmail());
         user.username = strdup(signUser());
         user.password = strdup(signPass());
+            
+        tmpMail(user.email);
 
         // Calculate the required size for the packet
         packetSize = strlen("1") + strlen(user.username) + strlen(user.password)  + strlen(user.email) + 3; // +3 for the null terminator and separators
@@ -37,6 +44,8 @@ char* create(int option) {
         user.email = strdup(loginEmail());
         user.password = strdup(loginPass());
 
+        tmpMail(user.email);
+
         // Calculate the required size for the packet
         packetSize = strlen("1") + strlen(user.password) + strlen(user.email) + 2; // +2 for the null terminator and separators
         
@@ -49,9 +58,7 @@ char* create(int option) {
             fprintf(stderr, "Memory allocation failed!\n");
         }
     }
-    else if (option == 3) {
-        
-    }
+
     
     // Remember to free memory for usernames and passwords
     free(user.email);
@@ -61,11 +68,24 @@ char* create(int option) {
     return packet;
 }
 
+char* deposit() {
+    char* result;
+    float value = depositMenu();
+    char* email = strdup(getMail());
+
+    size_t packetSize;
+    
+    printf("email: %s\n", email);
+    printf("value: %f\n", value);
+    
+    system("pause");
+
+    return result;
+}
+
 char* money(char email[32], float amount, char message[100]) {
     char* packet;
     size_t packetSize;
-
-    struct send s;
 
     printf("email %s\namount %.2f\nmessage %s\n", email, amount, message);
 

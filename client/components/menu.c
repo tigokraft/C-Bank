@@ -2,6 +2,7 @@
 #include <windows.h> 
 #include <string.h>
 #include <conio.h>
+#include <stdbool.h>
 
 void logo() {
     SetConsoleOutputCP(CP_UTF8);
@@ -83,7 +84,7 @@ int menu2() {
     int keyPressed = 0;
 
     #define MINMENU2 1 
-    #define MAXMENU2 8
+    #define MAXMENU2 9
 
     do
     {
@@ -92,13 +93,14 @@ int menu2() {
         logo();
 
         arrowHere(1,position); printf(" Send Money \n");
-        arrowHere(2,position); printf(" Balance \n");
-        arrowHere(3,position); printf(" Take a Loan \n");
-        arrowHere(4,position); printf(" Notifications \n");
-        arrowHere(5,position); printf(" Get account info \n");
-        arrowHere(6,position); printf(" Change password \n");
-        arrowHere(7,position); printf(" Account options \n");
-        arrowHere(8,position); printf(" Log off \n");
+        arrowHere(2,position); printf(" Deposit Money \n");
+        arrowHere(3,position); printf(" Balance \n");
+        arrowHere(4,position); printf(" Take a Loan \n");
+        arrowHere(5,position); printf(" Notifications \n");
+        arrowHere(6,position); printf(" Get account info \n");
+        arrowHere(7,position); printf(" Change password \n");
+        arrowHere(8,position); printf(" Account options \n");
+        arrowHere(9,position); printf(" Log off \n");
 
         keyPressed = getch();
         fflush(stdin);
@@ -229,4 +231,16 @@ char* sendMoney() {
     } while (valid);
 
     return result;
+}
+
+float depositMenu() {
+    float value = 0;
+
+    printf("Deposit amount:");
+
+    if (scanf("%f", &value) == 0) {
+        while(getchar() != '\n');
+    }
+    
+    return value;
 }

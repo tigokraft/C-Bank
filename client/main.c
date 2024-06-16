@@ -107,7 +107,8 @@ int main()
                         break;
                     case 2: 
                         break;
-                    case 8:
+                    case 9:
+                        clear();
                         session = false;
                     default:
                         break;
@@ -133,8 +134,11 @@ int main()
                         }
                         break;
                     case 2:
+                        packet = strdup(deposit());
+                        // func(sockfd, packet);
                         break;
-                    case 8:
+                    case 9:
+                        clear();
                         session = false;
                     default:
                         break;
