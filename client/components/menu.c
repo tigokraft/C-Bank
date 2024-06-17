@@ -4,15 +4,17 @@
 #include <conio.h>
 #include <stdbool.h>
 
+#include "text.h"
+
 void logo() {
     SetConsoleOutputCP(CP_UTF8);
 
     const char *art[] = {
-        " ▄▄·     ▄▄▄▄·  ▄▄▄·  ▐ ▄ ▄ •▄ ",
+        BGRN," ▄▄·     ▄▄▄▄·  ▄▄▄·  ▐ ▄ ▄ •▄ ",
         "▐█ ▌▪    ▐█ ▀█▪▐█ ▀█ •█▌▐██▌▄▌▪",
         "██ ▄▄ ██ ▐█▀▀█▄▄█▀▀█ ▐█▐▐▌▐▀▀▄·",
         "▐███▌    ██▄▪▐█▐█ ▪▐▌██▐█▌▐█.█▌",
-        "·▀▀▀     ·▀▀▀▀  ▀  ▀ ▀▀ █▪·▀  ▀"
+        "·▀▀▀     ·▀▀▀▀  ▀  ▀ ▀▀ █▪·▀  ▀",reset
     };
 
     int numLines = sizeof(art) / sizeof(art[0]);
@@ -23,12 +25,12 @@ void logo() {
 }
 
 void loading() {
-    printf("Logging in...\n{");
+    printf("Logging in...\n{"GRN);
     for (int i = 0; i < 50; i++) {
         printf("═");
         Sleep(20);
     }
-    printf("}\n");
+    printf(reset"}\n");
     Sleep(500);
 }
 
@@ -63,7 +65,7 @@ int mainMenu() {
         arrowHere(1,position); printf(" Sign In \n");
         arrowHere(2,position); printf(" Log In \n");
         arrowHere(3,position); printf(" More Info \n");
-        arrowHere(4,position); printf(" Exit \n");
+        arrowHere(4,position); printf(RED" Exit \n"reset);
 
         keyPressed = getch();
         fflush(stdin);
@@ -110,7 +112,7 @@ int menu2() {
         arrowHere(6,position); printf(" Get account info \n");
         arrowHere(7,position); printf(" Change password \n");
         arrowHere(8,position); printf(" Account options \n");
-        arrowHere(9,position); printf(" Log off \n");
+        arrowHere(9,position); printf(RED " Log off \n" reset);
 
         keyPressed = getch();
         fflush(stdin);
@@ -157,7 +159,7 @@ int moneyMenu(char email[32], float amount, char message[100]) {
 
         arrowHere(1,position); printf(" Send to: %s \n", email);
         arrowHere(2,position); printf(" Amount: %.2f \n", amount);
-        arrowHere(3,position); printf(" Message(optional): %s \n", message);
+        arrowHere(3,position); printf(" Message(optional): %s (NOT WORKING) \n", message);
         arrowHere(4,position); printf(" Send \n");
         arrowHere(5,position); printf(" Cancel \n");
 

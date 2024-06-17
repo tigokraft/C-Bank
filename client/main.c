@@ -30,11 +30,11 @@ bool func(SOCKET sockfd, char* packet)
     char buff[MAX];
     memset(buff, 0, sizeof(buff));
     recv(sockfd, buff, sizeof(buff), 0);
-    printf("From Server: %s\n", buff);
     packet = strdup(buff);
 
     if (buff[0] == '1') {
         saveBal(packet);
+        return true;
     }
 
     bzero(buff, MAX);
@@ -129,7 +129,12 @@ int main()
                         break;
                     case 4:
                         packet = strdup(balance());
-                        func(sockfd, packet);
+                        if (func(sockfd, packet)) {
+                            system("pause");
+
+                            system("cls");
+                            printf("Balance: %s\n", getBal()); 
+                        }
                         break;
                     case 9:
                         clear();
@@ -171,7 +176,12 @@ int main()
                         break;
                     case 4:
                         packet = strdup(balance());
-                        func(sockfd, packet);
+                        if (func(sockfd, packet)) {
+
+                            system("cls");
+                            printf("Balance: %s\n", getBal()); 
+                            system("pause");
+                        }
                         break;
                     case 9:
                         clear();

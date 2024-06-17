@@ -96,25 +96,26 @@ char* deposit() {
 char* money(char email[32], float amount, char message[100]) {
     char* packet = NULL;
     size_t packetSize;
+    char* userEmail = getMail();
 
     printf("email %s\namount %.2f\nmessage %s\n", email, amount, message);
 
     if (message[0] == '\0') {
-        packetSize = strlen(email) + floatSize(amount) + 4;
+        packetSize = strlen(userEmail) + strlen(email) + floatSize(amount) + 4;
         packet = (char*)malloc(packetSize);
 
         if (packet != NULL) {
-            snprintf(packet, packetSize, "3%s;%.2f",email, amount);
+            snprintf(packet, packetSize, "3%s;%.2f;%s",userEmail, amount, email);
         }
     }
     else {
         printf("message = %ld\namount = %d\n", strlen(message), floatSize(amount));
-        packetSize = strlen(email) + floatSize(amount) + strlen(message) + 5 + 3;
+        packetSize = strlen(userEmail) + strlen(email) + floatSize(amount) + strlen(message) + 5 + 3 + 2;
         packet = (char*)malloc(packetSize);
         printf("packet = %u\n", packetSize);
 
         if (packet != NULL) {
-            snprintf(packet, packetSize, "3%s;%.2f;%s",email, amount, message);
+            snprintf(packet, packetSize, "3%s;%.2f;%s;%s",userEmail, amount, email, message);
         }
     }
     system("pause");

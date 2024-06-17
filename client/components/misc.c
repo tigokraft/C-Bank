@@ -45,9 +45,28 @@ int floatSize(float value) {
 }
 
 void saveBal(char* packet) {
+    FILE* inputFile = fopen("tmp.txt", "r");
+    FILE* outputFile = fopen("output.txt", "w");
+
+    char line2[100];
+    for (int i = 0; i < 2; i++) {
+        fgets(line2, sizeof(line2), inputFile);
+        if (i == 0){
+            if (strstr(line2, "line to erase") == NULL) {
+                fputs(line2, outputFile);
+            }
+        }
+    }
+
+    fclose(inputFile);
+    fclose(outputFile);
+
+    // replace input.txt with output.txt
+    remove("tmp.txt");
+    rename("output.txt", "tmp.txt");
+
     FILE* fptr = fopen("tmp.txt", "r+");
 
-    printf("saving...\n");
     char* word = "1";
     char* final = NULL;
     size_t size;
@@ -55,7 +74,7 @@ void saveBal(char* packet) {
     size = strlen(packet) + 2;
 
     
-    char line[100]; // assuming lines are not longer than this
+    char line[100];
     size_t line_no = 0;
     while (fgets(line, sizeof(line), fptr)) {
         line_no++;
@@ -64,8 +83,6 @@ void saveBal(char* packet) {
             break;
         }
     }
-
-    printf("%ld\n", size);
 
     char* result = strstr(packet, word);
 
@@ -87,19 +104,17 @@ void saveBal(char* packet) {
     fclose(fptr);
 }
 
-float getBal() {
+char* getBal() {
     float balance = 0;
 
     FILE* fptr = fopen("tmp.txt", "r");
-    char line[40];
+    char line[100];
 
-    for (int i = 0; i < 1; i++) {
+    for (int i = 0; i < 2; i++) {
         fgets(line, sizeof(line), fptr);
     }
 
-    fscanf(fptr, "%f", &balance);
-
     fclose(fptr);
 
-    return balance;
+    return strdup(line);
 }
