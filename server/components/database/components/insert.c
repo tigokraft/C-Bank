@@ -73,3 +73,32 @@ bool insertion(FILE *file, FILE* individual, char packet[80]) {
 
     return true;
 }
+
+
+void changeBal(char path[64], float amount) {
+    FILE* inputFile = fopen(path, "r");
+    FILE* tempFile = fopen("temp.txt", "w");
+    
+    char line2[100];
+    for (int i = 0; i < 3; i++) {
+        fgets(line2, sizeof(line2), inputFile);
+        if (i != 2) {
+            if (strstr(line2, "line to erase") == NULL) {
+                fputs(line2, tempFile);
+            }
+        }
+    }
+
+    fclose(inputFile);
+    fclose(tempFile);
+
+    remove(path);
+    rename("temp.txt", path);
+
+    FILE* fptr = fopen(path, "a");
+
+    char line[100];
+    fprintf(fptr, "balance: %.2f\n", amount);   
+
+    fclose(fptr);
+}

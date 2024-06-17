@@ -98,14 +98,130 @@ char* manager(int option, char packet[80]) {
             result = validation(valid);
         }
     }
-    else if(option == 6) {
+    else if (option == 3) {
+        individual = fopen(individualPath, "r+");
+        if (individual != NULL) {
+            char* balanceStr = getBalance(individual);
+            char* delimiterPos = strstr(balanceStr, "1"); 
+            if (delimiterPos) {
+                *delimiterPos = '\0'; // Replace "1" with null terminator
+                balanceStr = delimiterPos + 1; // Move to the start of the value
+            }
+
+            float balance = convertToFloat(balanceStr);
+            float amount = convertToFloat(findAmount(packet, email));
+            float count = 0;
+            float add = 0;
+            char recEmail[32];
+
+            size_t packetSize = strlen(packet);
+            size_t email2 = strlen(email) + strlen(findAmount(packet, email)) + 3;
+
+            for (int i = email2; i <= packetSize; i++) {
+                if (packet[i] != ';') {
+                    recEmail[i-email2] = packet[i];
+                }
+                if (packet[i] == '\0') {
+                    recEmail[i-email2] = '\0';
+                    i = strlen(packet);
+                    printf("receiver email = %s\n", recEmail);
+                }
+            }
+
+            char recPath[64];
+            snprintf(recPath, sizeof(recPath), "data/individuals/%s.txt", recEmail);
+            
+            if (getUser(recEmail)) {
+                printf("balance = %.2f\n", balance);
+
+                if (amount > balance) {
+                    result = strdup("You don't have enought money!");
+                }
+                else {
+                    count = balance - amount;
+                    printf("count = %.2f\n", count);
+
+                    fclose(individual);
+                    individual = NULL;
+                    changeBal(individualPath, count);
+
+                    FILE* rec = fopen(recPath, "r");
+                    char* recBalance = getBalance(rec);
+                    char* delimiterPos = strstr(recBalance, "1"); 
+                    if (delimiterPos) {
+                        *delimiterPos = '\0'; // Replace "1" with null terminator
+                        recBalance = delimiterPos + 1; // Move to the start of the value
+                    }
+                    fclose(rec);
+
+                    float recBal = convertToFloat(recBalance);
+                    printf("rec Bal: %.2f\n", recBal);
+                    float finalBal = recBal += amount;
+
+                    changeBal(recPath, finalBal);
+                    result = strdup("true");
+
+                    
+                }
+            }
+            else {
+                return strdup("user not found");
+            }
+
+        }
+    }
+    else if (option == 4) {
+        individual = fopen(individualPath, "r+");
+        if (individual != NULL) {
+            char* balanceStr = getBalance(individual);
+            char* delimiterPos = strstr(balanceStr, "1"); 
+            if (delimiterPos) {
+                *delimiterPos = '\0'; // Replace "1" with null terminator
+                balanceStr = delimiterPos + 1; // Move to the start of the value
+            }
+
+            float balance = convertToFloat(balanceStr);
+            float amount = convertToFloat(findAmount(packet, email));
+
+            float final = balance + amount;
+
+            fclose(individual);
+            individual = NULL;
+            changeBal(individualPath, final);
+
+            result = strdup("true");
+        }
+    }
+    else if (option == 5) {
+        individual = fopen(individualPath, "r+");
+        if (individual != NULL) {
+            char* balanceStr = getBalance(individual);
+            char* delimiterPos = strstr(balanceStr, "1"); 
+            if (delimiterPos) {
+                *delimiterPos = '\0'; // Replace "1" with null terminator
+                balanceStr = delimiterPos + 1; // Move to the start of the value
+            }
+
+            float balance = convertToFloat(balanceStr);
+            float amount = convertToFloat(findAmount(packet, email));
+
+            float final = balance + amount;
+
+            fclose(individual);
+            individual = NULL;
+            changeBal(individualPath, final);
+
+            result = strdup("true");
+        }
+    }
+    else if (option == 6) {
         individual = fopen(individualPath, "r");
         if (individual == NULL) {
             printf("unkown balance\n");
         }
         else {
             printf("getting balance from %s\n", email);
-            result = getBalance(individual, email);
+            result = getBalance(individual);
         }
     }
     
@@ -118,4 +234,8 @@ char* manager(int option, char packet[80]) {
     }
 
     return result;
+} 
+
+void sendNotifications() {
+
 }
