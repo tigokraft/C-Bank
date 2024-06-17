@@ -54,6 +54,7 @@ void *func(void *arg)
             if (isdigit(buff[0])) {
                 printf("\nbytes received: %d\n", bytesRead);
                 tmp = strdup(buff);
+                
                 // Print message with client IP and get server response
                 printf("From %s: %s\n", cli->ip_addr, tmp);
                 bzero(buff, MAX);

@@ -81,7 +81,34 @@ bool lookup(FILE* file, FILE* individual, char packet[80]) {
     }
 }
 
+char* getBalance(FILE* fptr, char email[32]) {
+    char line[100];
+    char* result;
 
+    for(int i = 0; i < 3; i++) {
+        fgets(line, sizeof(line), fptr);
+    }
+    line[strcspn(line, "\n")] = 0; 
+    char* word = "balance: ";
+
+    result = strstr(line, word);
+
+    if (result != NULL) {
+        size_t lineLen = strlen(line);
+        size_t wordLen = strlen(word);
+
+        // Shift characters to overwrite the found word
+        memmove(result, result + wordLen, lineLen - (result - line) - wordLen + 1); 
+        // Ensure null-terminator is in place
+        line[lineLen - wordLen] = '\0';
+    }
+
+    size_t packetSize = strlen(line) + 2;
+    char* packet = (char*)malloc(packetSize);
+    snprintf(packet, packetSize, "1%s", line);
+
+    return packet;
+}
 
 // char* name(FILE* individual) {
 //     char* result;
