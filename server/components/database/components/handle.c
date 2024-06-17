@@ -104,6 +104,7 @@ char* manager(int option, char packet[80]) {
             printf("unkown balance\n");
         }
         else {
+            printf("getting balance from %s\n", email);
             result = getBalance(individual, email);
         }
     }

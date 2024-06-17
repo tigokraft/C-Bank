@@ -13,7 +13,7 @@ char* handle(char* packet) {
     }
 
     int value = packet[0] - '0';
-    
+
     result = manager(value, packet);
 
     return result;
