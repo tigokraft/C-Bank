@@ -31,8 +31,12 @@ bool func(SOCKET sockfd, char* packet)
     memset(buff, 0, sizeof(buff));
     recv(sockfd, buff, sizeof(buff), 0);
     printf("From Server: %s\n", buff);
-
     packet = strdup(buff);
+
+    if (buff[0] == '1') {
+        saveBal(packet);
+    }
+
     bzero(buff, MAX);
 
     if (strcmp(packet, "true") == 0) {
@@ -42,13 +46,6 @@ bool func(SOCKET sockfd, char* packet)
         Sleep(2000);
         return false;
     }
-
-    int value = buff[0] - '0';
-    if (value == 1) {
-        printf("received bal");
-        saveBal(packet);
-    }
-
 }
 
 
