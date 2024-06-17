@@ -5,6 +5,10 @@
 #include <string.h>
 #include <stdbool.h>
 
+void bzero(char *buffer, int size) {
+    memset(buffer, '\0', size);
+}
+
 #pragma comment(lib, "Ws2_32.lib") // Link with Winsock library
 
 #define MAX 200
@@ -28,15 +32,21 @@ bool func(SOCKET sockfd, char* packet)
     recv(sockfd, buff, sizeof(buff), 0);
     printf("From Server: %s\n", buff);
 
-    if (strcmp(buff, "true") == 0) {
+    packet = strdup(buff);
+    bzero(buff, MAX);
+
+    if (strcmp(packet, "true") == 0) {
         return true;
     }
     else {
         Sleep(2000);
         return false;
     }
-    if (buff[0] == '1') {
-        saveBal(buff);
+
+    int value = buff[0] - '0';
+    if (value == 1) {
+        printf("received bal");
+        saveBal(packet);
     }
 
 }
@@ -97,12 +107,14 @@ int main()
         {
         case 1:
             packet = strdup(create(1));
-            loading();
             if (func(sockfd, packet)) {
+                loading();
                 session = true;
+                packet = strdup(balance());
+                func(sockfd, packet);
+
                 do
                 {
-                    
                     option2 = menu2();
                     switch (option2)
                     {
@@ -120,15 +132,15 @@ int main()
                         break;
                     case 4:
                         packet = strdup(balance());
+                        func(sockfd, packet);
+                        break;
                     case 9:
                         clear();
                         session = false;
                     default:
                         break;
                     }
-                } while (session);
-                
-                
+                } while (session);               
             }
             break;
         case 2:
@@ -136,6 +148,9 @@ int main()
             if (func(sockfd, packet)) {
                 loading();
                 session = true;
+                packet = strdup(balance());
+                func(sockfd, packet);
+
                 do
                 {
                     option2 = menu2();
@@ -156,6 +171,10 @@ int main()
                         if (packet != NULL) {
                             func(sockfd, packet);
                         }
+                        break;
+                    case 4:
+                        packet = strdup(balance());
+                        func(sockfd, packet);
                         break;
                     case 9:
                         clear();

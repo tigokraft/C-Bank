@@ -40,27 +40,33 @@ int floatSize(float value) {
     return size;
 }
 
-void saveBal(char packet) {
+void saveBal(char* packet) {
     FILE* fptr = fopen("tmp.txt", "a+");
 
     char* result;
-    char* word = '1';
-    
-    char 
+    char* word = "1";
+
+    char* final = NULL;
+    size_t size;
+
+    char* packetdup = packet;
+    size = strlen(packet);
 
     result = strstr(packet, word);
 
     if (result != NULL) {
-        size_t lineLen = strlen(packet  );
-        size_t wordLen = strlen();
+        size_t lineLen = strlen(packetdup);
+        size_t wordLen = strlen(word);
 
         // Shift characters to overwrite the found word
-        memmove(result, result + wordLen, lineLen - (result - line) - wordLen + 1); 
+        memmove(result, result + wordLen, lineLen - (result - packetdup) - wordLen + 1); 
         // Ensure null-terminator is in place
-        line[lineLen - wordLen] = '\0';
+        packetdup[lineLen - wordLen] = '\0';
     }
-
-    fprintf(fptr, "%.2f\n", value);
+    snprintf(final, size, "%.2f", packetdup);
+    printf("final = %s\n", final);
+    system("pause");
+    fprintf(fptr, "%s\n", final);
     fclose(fptr);
 }
 
