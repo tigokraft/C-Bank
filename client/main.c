@@ -130,10 +130,10 @@ int main()
                     case 4:
                         packet = strdup(balance());
                         if (func(sockfd, packet)) {
-                            system("pause");
 
                             system("cls");
                             printf("Balance: %s\n", getBal()); 
+                            system("pause");
                         }
                         break;
                     case 9:
