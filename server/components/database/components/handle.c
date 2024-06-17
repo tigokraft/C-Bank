@@ -63,7 +63,6 @@ char* manager(int option, char packet[80]) {
     FILE *individual = NULL;
 
 
-    // Option handling (consider a switch statement for clarity)
     if (option == 1) {
         if (access(individualPath, F_OK) == 0) {
             printf("User already exists\n");
@@ -161,6 +160,10 @@ char* manager(int option, char packet[80]) {
                     changeBal(recPath, finalBal);
                     result = strdup("true");
 
+                    char notification[100];
+                    snprintf(notification, sizeof(notification), "%s sent %.2f$\n", email, amount);
+
+                    // sendNotifications()
                     
                 }
             }
@@ -236,6 +239,8 @@ char* manager(int option, char packet[80]) {
     return result;
 } 
 
-void sendNotifications() {
+void sendNotifications(char path[64], char* notification) {
+    FILE* fptr = fopen(path, "a+");
 
 }
+

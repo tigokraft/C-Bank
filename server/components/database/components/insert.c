@@ -70,6 +70,8 @@ bool insertion(FILE *file, FILE* individual, char packet[80]) {
     fprintf(individual, "user: %s\n", u.username);
     fprintf(individual, "pass: %s\n", u.password);
     fprintf(individual, "balance: %.2f\n", u.balance);
+    fprintf(individual, "\nNOTIFICATIONS:\n");
+    fprintf(individual, "\nTRANSACTIONS:\n");
 
     return true;
 }
