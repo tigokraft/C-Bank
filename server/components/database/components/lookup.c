@@ -1,6 +1,8 @@
 #include <string.h>
 #include <stdio.h>
 #include <stdbool.h>
+#include <errno.h> 
+
 
 bool lookup(FILE* file, FILE* individual, char packet[80]) {
     char email[32];
@@ -81,7 +83,7 @@ bool lookup(FILE* file, FILE* individual, char packet[80]) {
     }
 }
 
-char* getBalance(FILE* fptr, char email[32]) {
+char* getBalance(FILE* fptr) {
     char line[100];
     char* result;
 
@@ -109,6 +111,65 @@ char* getBalance(FILE* fptr, char email[32]) {
 
     return packet;
 }
+
+float convertToFloat(char* string) {
+    char* endptr; 
+    float result = (float) strtod(string, &endptr);
+    
+    return result;
+}
+
+char* findAmount(char* packet, char* email){
+    size_t packetSize = strlen(packet);
+    size_t emailSize = strlen(email) + 2;
+
+    char result[20];
+
+    for (int i = emailSize; i <= packetSize; i++) {
+        if (packet[i] != ';') {
+            result[i - emailSize] = packet[i];
+        }
+        if (packet[i] == ';') {
+            result[i - emailSize] = '\0';
+            i = packetSize;
+        }
+    }
+
+    printf("amount = %s | lenght = %ld\n", result, strlen(result));
+
+    return strdup(result);
+}
+
+bool getUser(char email[32]) {
+    char ch = email[0];
+    char check[11];
+    char line[100];
+
+    bool found = false;
+
+    snprintf(check, sizeof(check), "data/%c.txt", ch);
+
+    FILE* fptr = fopen(check, "r");
+
+    if (fptr == NULL) {
+        // Handle file not found (e.g., return false, log an error)
+        fprintf(stderr, "Error opening file %s: %s\n", check, strerror(errno));
+        return false; 
+    }
+
+    
+    while(fgets(line, sizeof(line), fptr) != NULL && !found) {
+        line[strcspn(line, "\n")] = 0; 
+        if (strcmp(line, email) == 0) {
+            found = true;
+        }
+    }
+
+    fclose(fptr);
+
+    return found;
+}
+
 
 // char* name(FILE* individual) {
 //     char* result;
