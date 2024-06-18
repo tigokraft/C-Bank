@@ -9,7 +9,6 @@
 // Include header files instead of .c files
 #include "insert.c"
 #include "lookup.c"
-#include "delete.c"
 
 char* validation(bool check) {
     char* result;

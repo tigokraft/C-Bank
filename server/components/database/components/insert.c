@@ -99,7 +99,6 @@ void changeBal(char path[64], float amount) {
 
     FILE* fptr = fopen(path, "a");
 
-    char line[100];
     fprintf(fptr, "balance: %.2f\n", amount);   
 
     fclose(fptr);
