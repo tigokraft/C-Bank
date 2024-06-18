@@ -193,7 +193,7 @@ int main()
             }
             break;
         case 3:
-
+            information();
             break;
         case 4:
             valid = false;

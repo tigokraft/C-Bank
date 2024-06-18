@@ -34,6 +34,14 @@ void loading() {
     Sleep(500);
 }
 
+void information() {
+    system("cls");
+    printf("This is a bank made in C, open source and for the use of anyone who wishes to test this out or actually base real code out of this (impossible)\n");
+    printf("To use this you need to create an account by pressing the first option, or log into an existing account by pressing the second option\n");
+    printf("There are some features missing that will soon be added to the program, like notifications and transactions(they exist but are only serverside for now)\n");
+    system("pause");
+}
+
 // =========================================
 //              Arrow Printer
 // =========================================

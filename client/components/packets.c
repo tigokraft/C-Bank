@@ -75,9 +75,6 @@ char* deposit() {
     char* email = strdup(getMail());
 
     size_t packetSize;
-    
-    printf("email: %s\n", email);
-    printf("value: %.2f\n", value);
 
     packetSize = strlen(email) + floatSize(value) + 4;
     packet = (char*)malloc(packetSize);
@@ -85,10 +82,6 @@ char* deposit() {
     if (packet != NULL) {
         snprintf(packet, packetSize, "4%s;%.2f", email, value);
     }
-    
-    printf("packet = %s\n", packet);
-
-    system("pause");
 
     return packet;
 }
